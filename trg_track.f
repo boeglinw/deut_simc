@@ -499,30 +499,35 @@ CGAW              B_field_z(iz,ir) = 0.0
 *       spect I: -1 for e spectrometer, +1 for p spectrometer
   
       INTEGER i,spect
-      REAL*8    ut(6),dudt(9),dut(9),dum(9),hh,h6
+      REAL*8    ut(9),dudt(9),dut(9),dum(9),hh,h6
+
+*     local version
+      REAL*8    u0l(9)
+
+      u0l(1:6) = u0 
 
       hh=h*0.5
       h6=h/6.
  
-      CALL trgDeriv(u0,dudt,spect)
+      CALL trgDeriv(u0l,dudt,spect)
       DO i=1,6
-	ut(i) = u0(i) + hh*dudt(i)
+	ut(i) = u0l(i) + hh*dudt(i)
       ENDDO
 
       CALL trgDeriv(ut,dut,spect)
       DO i=1,6
-	ut(i) = u0(i) + hh*dut(i)
+	ut(i) = u0l(i) + hh*dut(i)
       ENDDO
 
       CALL trgDeriv(ut,dum,spect)
       DO i=1,6
-	ut(i) = u0(i) +h*dum(i)
+	ut(i) = u0l(i) +h*dum(i)
         dum(i)= dut(i)  +dum(i)
       ENDDO
 
       CALL trgDeriv(ut,dut,spect)
       DO i=1,6
-        u1(i)=u0(i)+h6*(dudt(i)+dut(i)+2.*dum(i))
+        u1(i)=u0l(i)+h6*(dudt(i)+dut(i)+2.*dum(i))
       ENDDO
 
       RETURN       
